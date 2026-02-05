@@ -1,0 +1,4659 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="AI Agent Observability Platform">
+      
+      
+        <meta name="author" content="Prela Team">
+      
+      
+        <link rel="canonical" href="https://docs.prela.dev/concepts/replay/">
+      
+      
+        <link rel="prev" href="../exporters/">
+      
+      
+        <link rel="next" href="../replay-advanced/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Replay - Prela Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#deterministic-replay" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Prela Documentation" class="md-header__button md-logo" aria-label="Prela Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Prela Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Replay
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/garrettw2200/prela-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    garrettw2200/prela-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/installation/" class="md-tabs__link">
+          
+  
+  
+  Getting Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../tracing/" class="md-tabs__link">
+          
+  
+  
+  Concepts
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../integrations/openai.md" class="md-tabs__link">
+          
+  
+  
+  Integrations
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../evals/overview/" class="md-tabs__link">
+          
+  
+  
+  Evaluation Framework
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../cli/commands/" class="md-tabs__link">
+          
+  
+  
+  CLI Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../api/core/" class="md-tabs__link">
+          
+  
+  
+  API Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../examples/test-scenarios/" class="md-tabs__link">
+          
+  
+  
+  Examples
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../contributing/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Contributing
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../changelog/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Changelog
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Prela Documentation" class="md-nav__button md-logo" aria-label="Prela Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Prela Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/garrettw2200/prela-docs" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    garrettw2200/prela-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tracing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tracing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../spans/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Spans
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../context/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Context Propagation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../sampling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sampling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../exporters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exporters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Replay
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Replay
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is Replay?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-replay-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Replay Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How Replay Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#replay-capture-automatic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Replay Capture (Automatic)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replay-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Replay Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#replay-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Replay Modes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Replay Modes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-exact-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Exact Replay
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-modified-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Modified Replay
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparing-replays" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparing Replays
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparing Replays">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#comparison-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison Output
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#difference-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Difference Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#semantic-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Semantic Similarity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-retry-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Retry Logic
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automatic Retry Logic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exponential-backoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exponential Backoff
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monitoring-retries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring Retries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#semantic-similarity-fallback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Semantic Similarity Fallback
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Semantic Similarity Fallback">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fallback-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fallback Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#difflib-accuracy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        difflib Accuracy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-install-sentence-transformers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to Install sentence-transformers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-availability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking Availability
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tool-re-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool Re-execution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tool Re-execution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#3-tier-priority-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3-Tier Priority System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#safety-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safety Controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retrieval-re-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retrieval Re-execution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Retrieval Re-execution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#3-tier-priority-system_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3-Tier Priority System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-vector-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Vector Databases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chromadb-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ChromaDB Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query Override
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cost-estimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cost Estimation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-traces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loading Traces
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Loading Traces">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#from-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-dictionary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From Dictionary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-span-list" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From Span List
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trace-tree-reconstruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trace Tree Reconstruction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#selective-api-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Selective API Calls
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-enable-replay-selectively" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Enable Replay Selectively
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-use-exact-replay-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Use Exact Replay First
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-compare-semantically" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Compare Semantically
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-batch-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Batch Experiments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-store-comparisons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Store Comparisons
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Limitations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-tool-side-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Tool Side Effects
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-streaming-responses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Streaming Responses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-vendor-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Vendor Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exact-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exact Replay
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modified-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modified Replay
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../replay-advanced/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Replay Advanced
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Integrations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Integrations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/openai.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenAI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/anthropic.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Anthropic
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/langchain.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LangChain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/llamaindex.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LlamaIndex
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/n8n.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    n8n
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/n8n-code-nodes.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    n8n Code Nodes
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_7" id="__nav_4_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Agent Frameworks
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Multi-Agent Frameworks
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/crewai.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CrewAI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/autogen.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AutoGen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/langgraph.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    LangGraph
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../integrations/swarm.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Swarm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluation Framework
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Evaluation Framework
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../evals/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../evals/writing-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Writing Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../evals/assertions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Assertions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../evals/multi-agent-assertions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Agent Assertions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../evals/n8n-workflows/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    N8N Workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../evals/running/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Running Evaluations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../evals/ci-integration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CI Integration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../cli/configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_7" id="__nav_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/core/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/exporters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exporters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/instrumentation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Instrumentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/evaluations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Evaluations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/replay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Replay
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/test-scenarios/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Production Test Scenarios
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/basic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Basic Tracing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/custom-spans/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Spans
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/parallel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Parallel Execution
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/production/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Production Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/replay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Replay
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/replay-multi-agent/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Replay Multi-Agent
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/replay-with-tools/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Replay with Tools
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What is Replay?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-replay-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How Replay Works
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="How Replay Works">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#replay-capture-automatic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Replay Capture (Automatic)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#replay-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Replay Execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#replay-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Replay Modes
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Replay Modes">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-exact-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Exact Replay
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-modified-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Modified Replay
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#comparing-replays" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparing Replays
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Comparing Replays">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#comparison-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison Output
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#difference-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Difference Types
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#semantic-similarity" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Semantic Similarity
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-retry-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Retry Logic
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Automatic Retry Logic">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How It Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#exponential-backoff" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exponential Backoff
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monitoring-retries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Monitoring Retries
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#semantic-similarity-fallback" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Semantic Similarity Fallback
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Semantic Similarity Fallback">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fallback-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fallback Strategy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#performance-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#difflib-accuracy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        difflib Accuracy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#when-to-install-sentence-transformers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to Install sentence-transformers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-availability" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checking Availability
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tool-re-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tool Re-execution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tool Re-execution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#3-tier-priority-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3-Tier Priority System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#safety-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Safety Controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retrieval-re-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Retrieval Re-execution
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Retrieval Re-execution">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#3-tier-priority-system_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3-Tier Priority System
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#supported-vector-databases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported Vector Databases
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#chromadb-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ChromaDB Example
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-override" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query Override
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#use-cases_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cost-estimation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cost Estimation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-traces" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loading Traces
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Loading Traces">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#from-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From File
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-dictionary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From Dictionary
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#from-span-list" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        From Span List
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#trace-tree-reconstruction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trace Tree Reconstruction
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#selective-api-calls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Selective API Calls
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Best Practices">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-enable-replay-selectively" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Enable Replay Selectively
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-use-exact-replay-first" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Use Exact Replay First
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-compare-semantically" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Compare Semantically
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-batch-experiments" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Batch Experiments
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-store-comparisons" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Store Comparisons
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Limitations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Limitations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-tool-side-effects" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Tool Side Effects
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-streaming-responses" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Streaming Responses
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-vendor-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Vendor Support
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Performance
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#exact-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Exact Replay
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modified-replay" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Modified Replay
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Comparison
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next Steps
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="deterministic-replay">Deterministic Replay<a class="headerlink" href="#deterministic-replay" title="Permanent link">&para;</a></h1>
+<p>Re-execute captured traces with parameter modifications and compare results.</p>
+<hr />
+<h2 id="what-is-replay">What is Replay?<a class="headerlink" href="#what-is-replay" title="Permanent link">&para;</a></h2>
+<p><strong>Replay</strong> enables you to re-execute previously captured traces in two modes:</p>
+<ol>
+<li><strong>Exact Replay</strong>: Deterministic re-execution using cached data (no API calls, identical results)</li>
+<li><strong>Modified Replay</strong>: Re-execution with parameter changes (makes real API calls for modified spans)</li>
+</ol>
+<p>This is powerful for:</p>
+<ul>
+<li><strong>A/B Testing</strong>: Compare different models (GPT-4 vs Claude)</li>
+<li><strong>Parameter Tuning</strong>: Test temperature, max_tokens, system prompts</li>
+<li><strong>Regression Testing</strong>: Ensure new versions produce similar outputs</li>
+<li><strong>Cost Optimization</strong>: Experiment with cheaper models</li>
+<li><strong>Debugging</strong>: Reproduce issues from production traces</li>
+</ul>
+<hr />
+<h2 id="how-replay-works">How Replay Works<a class="headerlink" href="#how-replay-works" title="Permanent link">&para;</a></h2>
+<h3 id="replay-capture-automatic">Replay Capture (Automatic)<a class="headerlink" href="#replay-capture-automatic" title="Permanent link">&para;</a></h3>
+<p>When you enable replay capture, Prela automatically records additional data:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">prela</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="c1"># Enable replay capture</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">tracer</span> <span class="o">=</span> <span class="n">prela</span><span class="o">.</span><span class="n">init</span><span class="p">(</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">service_name</span><span class="o">=</span><span class="s2">&quot;my-agent&quot;</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">exporter</span><span class="o">=</span><span class="s2">&quot;file&quot;</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">file_path</span><span class="o">=</span><span class="s2">&quot;traces.jsonl&quot;</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">capture_for_replay</span><span class="o">=</span><span class="kc">True</span>  <span class="c1"># ← Enable replay</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="p">)</span>
+</span></code></pre></div>
+<p>Captured data includes:</p>
+<ul>
+<li><strong>LLM Requests</strong>: Model, temperature, max_tokens, system_prompt, messages</li>
+<li><strong>LLM Responses</strong>: Full response text, token usage, finish_reason</li>
+<li><strong>Tool Calls</strong>: Function names, arguments, results</li>
+<li><strong>Retrieval Operations</strong>: Queries, documents, similarity scores</li>
+<li><strong>Agent State</strong>: Memory, context, configuration</li>
+</ul>
+<h3 id="replay-execution">Replay Execution<a class="headerlink" href="#replay-execution" title="Permanent link">&para;</a></h3>
+<p>Load and replay a trace:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prela.replay</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReplayEngine</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prela.replay.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">TraceLoader</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Load trace from file</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">trace</span> <span class="o">=</span> <span class="n">TraceLoader</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;traces.jsonl&quot;</span><span class="p">)</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c1"># Create replay engine</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">engine</span> <span class="o">=</span> <span class="n">ReplayEngine</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="c1"># Exact replay (no API calls)</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_exact</span><span class="p">()</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Duration: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">total_duration_ms</span><span class="si">}</span><span class="s2">ms&quot;</span><span class="p">)</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tokens: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">total_tokens</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cost: $</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">total_cost_usd</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="replay-modes">Replay Modes<a class="headerlink" href="#replay-modes" title="Permanent link">&para;</a></h2>
+<h3 id="1-exact-replay">1. Exact Replay<a class="headerlink" href="#1-exact-replay" title="Permanent link">&para;</a></h3>
+<p>Re-execute using captured data without API calls:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Deterministic, fast, free</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_exact</span><span class="p">()</span>
+</span></code></pre></div>
+<p><strong>Characteristics:</strong></p>
+<ul>
+<li>✅ <strong>Deterministic</strong>: Always produces identical results</li>
+<li>✅ <strong>Fast</strong>: ~1ms per span (no network calls)</li>
+<li>✅ <strong>Free</strong>: No API costs</li>
+<li>✅ <strong>Offline</strong>: Works without API access</li>
+</ul>
+<p><strong>Use Cases:</strong></p>
+<ul>
+<li>Verify trace completeness</li>
+<li>Measure baseline performance</li>
+<li>Test comparison engine</li>
+<li>Debugging without costs</li>
+</ul>
+<h3 id="2-modified-replay">2. Modified Replay<a class="headerlink" href="#2-modified-replay" title="Permanent link">&para;</a></h3>
+<p>Re-execute with parameter changes (makes real API calls):</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Change model and temperature</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">temperature</span><span class="o">=</span><span class="mf">0.7</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="p">)</span>
+</span></code></pre></div>
+<p><strong>Available Modifications:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>model</code></td>
+<td>Change LLM model</td>
+<td><code>"gpt-4o"</code>, <code>"claude-sonnet-4"</code></td>
+</tr>
+<tr>
+<td><code>temperature</code></td>
+<td>Adjust randomness</td>
+<td><code>0.0</code> (deterministic) to <code>1.0</code> (creative)</td>
+</tr>
+<tr>
+<td><code>system_prompt</code></td>
+<td>Override system instructions</td>
+<td><code>"You are a helpful assistant"</code></td>
+</tr>
+<tr>
+<td><code>max_tokens</code></td>
+<td>Change output length limit</td>
+<td><code>512</code>, <code>1024</code>, <code>4096</code></td>
+</tr>
+<tr>
+<td><code>mock_tool_responses</code></td>
+<td>Override tool outputs</td>
+<td><code>{"search": {"results": [...]}}</code></td>
+</tr>
+<tr>
+<td><code>mock_retrieval_results</code></td>
+<td>Override retrieval results</td>
+<td><code>{"query": {"documents": [...]}}</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Selective Re-execution:</strong></p>
+<p>Only modified spans make real API calls. Unmodified spans use cached data:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Only LLM spans with gpt-4 → gpt-4o will call API</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">)</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="c1"># If original trace used 3 LLM calls:</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="c1"># - 3 API calls are made (one per modified span)</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="c1"># - Tool calls use cached data</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="c1"># - Retrieval uses cached data</span>
+</span></code></pre></div>
+<hr />
+<h2 id="comparing-replays">Comparing Replays<a class="headerlink" href="#comparing-replays" title="Permanent link">&para;</a></h2>
+<p>Compare two replay results to see differences:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prela.replay</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_replays</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="c1"># Exact replay (baseline)</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">original</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_exact</span><span class="p">()</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="c1"># Modified replay (experiment)</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">modified</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="n">temperature</span><span class="o">=</span><span class="mf">0.5</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="p">)</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="c1"># Compare</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="n">comparison</span> <span class="o">=</span> <span class="n">compare_replays</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">modified</span><span class="p">)</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a><span class="c1"># Print summary</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="nb">print</span><span class="p">(</span><span class="n">comparison</span><span class="o">.</span><span class="n">generate_summary</span><span class="p">())</span>
+</span></code></pre></div>
+<h3 id="comparison-output">Comparison Output<a class="headerlink" href="#comparison-output" title="Permanent link">&para;</a></h3>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>Replay Comparison Summary
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>========================
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>Total Spans: 5
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>Spans with Differences: 3
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>Changes:
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>- Output differences: 3 spans
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>- Token changes: 2 spans (+150 tokens)
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>- Cost changes: 2 spans (+$0.0045)
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>- Duration changes: 3 spans (+234ms)
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>Span-by-Span Differences:
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>1. anthropic.messages.create
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>   ✗ Output changed (semantic similarity: 85.3%)
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a>   ✗ Tokens: 450 → 600 (+150)
+</span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>   ✗ Cost: $0.0090 → $0.0135 (+$0.0045)
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a>   ✗ Duration: 823ms → 1057ms (+234ms)
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>2. langchain.tool.search
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>   ✓ No differences (cached data used)
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a>3. anthropic.messages.create
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a>   ✗ Output changed (semantic similarity: 92.1%)
+</span><span id="__span-6-26"><a id="__codelineno-6-26" name="__codelineno-6-26" href="#__codelineno-6-26"></a>   ✓ Tokens unchanged (cached)
+</span><span id="__span-6-27"><a id="__codelineno-6-27" name="__codelineno-6-27" href="#__codelineno-6-27"></a>   ✗ Duration: 756ms → 891ms (+135ms)
+</span></code></pre></div>
+<h3 id="difference-types">Difference Types<a class="headerlink" href="#difference-types" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Difference</th>
+<th>Description</th>
+<th>When It Appears</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Output</strong></td>
+<td>Response text changed</td>
+<td>Modified LLM spans</td>
+</tr>
+<tr>
+<td><strong>Input</strong></td>
+<td>Request changed</td>
+<td>Modified prompts</td>
+</tr>
+<tr>
+<td><strong>Tokens</strong></td>
+<td>Token usage changed</td>
+<td>Model change, output length change</td>
+</tr>
+<tr>
+<td><strong>Cost</strong></td>
+<td>API cost changed</td>
+<td>Model change, token change</td>
+</tr>
+<tr>
+<td><strong>Duration</strong></td>
+<td>Execution time changed</td>
+<td>Real API calls vs cached</td>
+</tr>
+<tr>
+<td><strong>Status</strong></td>
+<td>Success → Error (or vice versa)</td>
+<td>API failures, timeouts</td>
+</tr>
+<tr>
+<td><strong>Semantic Similarity</strong></td>
+<td>Cosine similarity of embeddings</td>
+<td>Requires sentence-transformers</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="semantic-similarity">Semantic Similarity<a class="headerlink" href="#semantic-similarity" title="Permanent link">&para;</a></h2>
+<p>Compare text outputs semantically (requires optional dependency):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>pip<span class="w"> </span>install<span class="w"> </span>sentence-transformers
+</span></code></pre></div>
+<p>The comparison engine uses embeddings to measure similarity:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">comparison</span> <span class="o">=</span> <span class="n">compare_replays</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">modified</span><span class="p">)</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">comparison</span><span class="o">.</span><span class="n">differences</span><span class="p">:</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="k">if</span> <span class="n">diff</span><span class="o">.</span><span class="n">semantic_similarity</span><span class="p">:</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>        <span class="k">if</span> <span class="n">diff</span><span class="o">.</span><span class="n">semantic_similarity</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">:</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">span_name</span><span class="si">}</span><span class="s2">: Highly similar (</span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">semantic_similarity</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>        <span class="k">elif</span> <span class="n">diff</span><span class="o">.</span><span class="n">semantic_similarity</span> <span class="o">&gt;</span> <span class="mf">0.7</span><span class="p">:</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">span_name</span><span class="si">}</span><span class="s2">: Moderately similar (</span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">semantic_similarity</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>        <span class="k">else</span><span class="p">:</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">span_name</span><span class="si">}</span><span class="s2">: Low similarity (</span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">semantic_similarity</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p><strong>Interpretation:</strong></p>
+<ul>
+<li><strong>&gt; 90%</strong>: Nearly identical meaning (paraphrases)</li>
+<li><strong>70-90%</strong>: Similar concepts, different wording</li>
+<li><strong>50-70%</strong>: Related but divergent responses</li>
+<li><strong>&lt; 50%</strong>: Significantly different outputs</li>
+</ul>
+<hr />
+<h2 id="automatic-retry-logic">Automatic Retry Logic<a class="headerlink" href="#automatic-retry-logic" title="Permanent link">&para;</a></h2>
+<p>Prela automatically retries failed API calls with exponential backoff.</p>
+<h3 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h3>
+<p>When an API call fails with a transient error (rate limit, timeout, connection issue), Prela:</p>
+<ol>
+<li>Detects if error is retryable</li>
+<li>Waits with exponential backoff</li>
+<li>Retries up to configured maximum</li>
+<li>Tracks retry count per span</li>
+</ol>
+<p><strong>Retryable Errors:</strong></p>
+<ul>
+<li>HTTP 429 (Rate Limit)</li>
+<li>HTTP 503 (Service Unavailable)</li>
+<li>HTTP 502 (Bad Gateway)</li>
+<li>Connection timeouts</li>
+<li>Network errors</li>
+</ul>
+<p><strong>Non-Retryable Errors:</strong></p>
+<ul>
+<li>Authentication failures (401, 403)</li>
+<li>Invalid requests (400)</li>
+<li>Not found (404)</li>
+</ul>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prela.replay</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReplayEngine</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="c1"># Default: 3 retries, 1s initial delay, 60s max</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">engine</span> <span class="o">=</span> <span class="n">ReplayEngine</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1"># Custom: More aggressive retry for flaky networks</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="n">engine</span> <span class="o">=</span> <span class="n">ReplayEngine</span><span class="p">(</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="n">trace</span><span class="p">,</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="n">max_retries</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>    <span class="n">retry_initial_delay</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a>    <span class="n">retry_max_delay</span><span class="o">=</span><span class="mf">120.0</span><span class="p">,</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a>    <span class="n">retry_exponential_base</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="p">)</span>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a>
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="c1"># Fast-fail: Minimal retries</span>
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="n">engine</span> <span class="o">=</span> <span class="n">ReplayEngine</span><span class="p">(</span>
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a>    <span class="n">trace</span><span class="p">,</span>
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a>    <span class="n">max_retries</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a>    <span class="n">retry_initial_delay</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="exponential-backoff">Exponential Backoff<a class="headerlink" href="#exponential-backoff" title="Permanent link">&para;</a></h3>
+<p>Delays double with each retry (capped at max_delay):</p>
+<ul>
+<li>Attempt 0: No delay (initial request)</li>
+<li>Attempt 1: 1.0s delay</li>
+<li>Attempt 2: 2.0s delay</li>
+<li>Attempt 3: 4.0s delay</li>
+<li>Attempt 4: 8.0s delay (capped at max_delay)</li>
+</ul>
+<h3 id="monitoring-retries">Monitoring Retries<a class="headerlink" href="#monitoring-retries" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">)</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="c1"># Check which spans required retries</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="k">for</span> <span class="n">span</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">spans</span><span class="p">:</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="k">if</span> <span class="n">span</span><span class="o">.</span><span class="n">retry_count</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠️  </span><span class="si">{</span><span class="n">span</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> required </span><span class="si">{</span><span class="n">span</span><span class="o">.</span><span class="n">retry_count</span><span class="si">}</span><span class="s2"> retries&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="semantic-similarity-fallback">Semantic Similarity Fallback<a class="headerlink" href="#semantic-similarity-fallback" title="Permanent link">&para;</a></h2>
+<p>Prela provides intelligent fallback when <code>sentence-transformers</code> is unavailable.</p>
+<h3 id="fallback-strategy">Fallback Strategy<a class="headerlink" href="#fallback-strategy" title="Permanent link">&para;</a></h3>
+<p><strong>Without sentence-transformers</strong> (fallback):</p>
+<ol>
+<li><strong>Exact Match</strong> (fastest) - Returns 1.0 for identical strings</li>
+<li><strong>difflib.SequenceMatcher</strong> (primary) - Edit distance-based similarity (0.0-1.0)</li>
+<li><strong>Jaccard Word Similarity</strong> (secondary) - Word overlap measurement (0.0-1.0)</li>
+</ol>
+<p><strong>With sentence-transformers</strong> (best accuracy):</p>
+<ul>
+<li>Uses <code>all-MiniLM-L6-v2</code> embedding model</li>
+<li>Computes cosine similarity between embeddings</li>
+<li>Better for paraphrasing and semantic equivalence</li>
+</ul>
+<h3 id="performance-comparison">Performance Comparison<a class="headerlink" href="#performance-comparison" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Speed</th>
+<th>Accuracy</th>
+<th>Use Case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Exact match</td>
+<td>Instant</td>
+<td>Perfect for identical text</td>
+<td>Quick check</td>
+</tr>
+<tr>
+<td>difflib</td>
+<td>~1-5ms</td>
+<td>Good for typos, minor edits</td>
+<td>General use</td>
+</tr>
+<tr>
+<td>Jaccard</td>
+<td>~1-5ms</td>
+<td>Good for word reordering</td>
+<td>Paraphrasing</td>
+</tr>
+<tr>
+<td>Embeddings</td>
+<td>~10-50ms</td>
+<td>Best for semantic similarity</td>
+<td>Production</td>
+</tr>
+</tbody>
+</table>
+<h3 id="difflib-accuracy">difflib Accuracy<a class="headerlink" href="#difflib-accuracy" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Same text, different case</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="s2">&quot;Hello World&quot;</span> <span class="n">vs</span> <span class="s2">&quot;hello world&quot;</span> <span class="err">→</span> <span class="mf">0.82</span> <span class="p">(</span><span class="mi">82</span><span class="o">%</span><span class="p">)</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="c1"># Minor edit</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="s2">&quot;brown fox&quot;</span> <span class="n">vs</span> <span class="s2">&quot;red fox&quot;</span> <span class="err">→</span> <span class="mf">0.85</span> <span class="p">(</span><span class="mi">85</span><span class="o">%</span><span class="p">)</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="c1"># Word reorder</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="s2">&quot;cat dog bird&quot;</span> <span class="n">vs</span> <span class="s2">&quot;dog bird cat&quot;</span> <span class="err">→</span> <span class="mf">0.67</span> <span class="p">(</span><span class="mi">67</span><span class="o">%</span><span class="p">)</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a><span class="c1"># Completely different</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="s2">&quot;apple&quot;</span> <span class="n">vs</span> <span class="s2">&quot;orange&quot;</span> <span class="err">→</span> <span class="mf">0.0</span> <span class="p">(</span><span class="mi">0</span><span class="o">%</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="when-to-install-sentence-transformers">When to Install sentence-transformers<a class="headerlink" href="#when-to-install-sentence-transformers" title="Permanent link">&para;</a></h3>
+<p>Install for production use when you need:</p>
+<ul>
+<li>Paraphrase detection ("quick" vs "fast")</li>
+<li>Semantic equivalence ("start" vs "begin")</li>
+<li>High accuracy requirements</li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>pip<span class="w"> </span>install<span class="w"> </span>prela<span class="o">[</span>similarity<span class="o">]</span><span class="w">  </span><span class="c1"># Installs sentence-transformers (~500MB)</span>
+</span></code></pre></div>
+<h3 id="checking-availability">Checking Availability<a class="headerlink" href="#checking-availability" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prela.replay</span><span class="w"> </span><span class="kn">import</span> <span class="n">compare_replays</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">comparison</span> <span class="o">=</span> <span class="n">compare_replays</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">modified</span><span class="p">)</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="k">if</span> <span class="n">comparison</span><span class="o">.</span><span class="n">semantic_similarity_available</span><span class="p">:</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Using embeddings: </span><span class="si">{</span><span class="n">comparison</span><span class="o">.</span><span class="n">semantic_similarity_model</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="k">else</span><span class="p">:</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using fallback: difflib + Jaccard&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="tool-re-execution">Tool Re-execution<a class="headerlink" href="#tool-re-execution" title="Permanent link">&para;</a></h2>
+<p>Re-execute tools during replay instead of using cached data.</p>
+<h3 id="3-tier-priority-system">3-Tier Priority System<a class="headerlink" href="#3-tier-priority-system" title="Permanent link">&para;</a></h3>
+<p>For tool spans, Prela uses this priority order:</p>
+<ol>
+<li><strong>Mock responses</strong> (highest) - Always used if provided</li>
+<li><strong>Real execution</strong> - Used if enabled, mocks not provided</li>
+<li><strong>Cached data</strong> (default) - Original captured output</li>
+</ol>
+<p>This prevents accidental execution while allowing controlled testing.</p>
+<h3 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># Define tool functions</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">my_calculator</span><span class="p">(</span><span class="n">input_data</span><span class="p">):</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;a&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">input_data</span><span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">]}</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">my_search</span><span class="p">(</span><span class="n">input_data</span><span class="p">):</span>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    <span class="c1"># Actual search implementation</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;results&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]}</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="c1"># Create tool registry</span>
+</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="n">tool_registry</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-14-11"><a id="__codelineno-14-11" name="__codelineno-14-11" href="#__codelineno-14-11"></a>    <span class="s2">&quot;calculator&quot;</span><span class="p">:</span> <span class="n">my_calculator</span><span class="p">,</span>
+</span><span id="__span-14-12"><a id="__codelineno-14-12" name="__codelineno-14-12" href="#__codelineno-14-12"></a>    <span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="n">my_search</span><span class="p">,</span>
+</span><span id="__span-14-13"><a id="__codelineno-14-13" name="__codelineno-14-13" href="#__codelineno-14-13"></a><span class="p">}</span>
+</span><span id="__span-14-14"><a id="__codelineno-14-14" name="__codelineno-14-14" href="#__codelineno-14-14"></a>
+</span><span id="__span-14-15"><a id="__codelineno-14-15" name="__codelineno-14-15" href="#__codelineno-14-15"></a><span class="c1"># Re-execute tools</span>
+</span><span id="__span-14-16"><a id="__codelineno-14-16" name="__codelineno-14-16" href="#__codelineno-14-16"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-14-17"><a id="__codelineno-14-17" name="__codelineno-14-17" href="#__codelineno-14-17"></a>    <span class="n">enable_tool_execution</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-14-18"><a id="__codelineno-14-18" name="__codelineno-14-18" href="#__codelineno-14-18"></a>    <span class="n">tool_registry</span><span class="o">=</span><span class="n">tool_registry</span><span class="p">,</span>
+</span><span id="__span-14-19"><a id="__codelineno-14-19" name="__codelineno-14-19" href="#__codelineno-14-19"></a><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="safety-controls">Safety Controls<a class="headerlink" href="#safety-controls" title="Permanent link">&para;</a></h3>
+<p><strong>Allowlist</strong> (only execute specific tools):</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>    <span class="n">enable_tool_execution</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>    <span class="n">tool_execution_allowlist</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;calculator&quot;</span><span class="p">,</span> <span class="s2">&quot;search&quot;</span><span class="p">],</span>  <span class="c1"># Only these</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="n">tool_registry</span><span class="o">=</span><span class="n">tool_registry</span><span class="p">,</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="p">)</span>
+</span></code></pre></div>
+<p><strong>Blocklist</strong> (never execute specific tools):</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>    <span class="n">enable_tool_execution</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    <span class="n">tool_execution_blocklist</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;delete_file&quot;</span><span class="p">,</span> <span class="s2">&quot;shutdown&quot;</span><span class="p">],</span>  <span class="c1"># Block these</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    <span class="n">tool_registry</span><span class="o">=</span><span class="n">tool_registry</span><span class="p">,</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="p">)</span>
+</span></code></pre></div>
+<p><strong>Note:</strong> Blocklist takes precedence over allowlist.</p>
+<h3 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h3>
+<p><strong>Testing with Different Tool Implementations:</strong></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># Original used production API</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="c1"># Replay with mock API for testing</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="k">def</span><span class="w"> </span><span class="nf">mock_api</span><span class="p">(</span><span class="n">input_data</span><span class="p">):</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="s2">&quot;test&quot;</span><span class="p">}</span>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a><span class="n">tool_registry</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;api_call&quot;</span><span class="p">:</span> <span class="n">mock_api</span><span class="p">}</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a>    <span class="n">enable_tool_execution</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a>    <span class="n">tool_execution_allowlist</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;api_call&quot;</span><span class="p">],</span>
+</span><span id="__span-17-11"><a id="__codelineno-17-11" name="__codelineno-17-11" href="#__codelineno-17-11"></a>    <span class="n">tool_registry</span><span class="o">=</span><span class="n">tool_registry</span><span class="p">,</span>
+</span><span id="__span-17-12"><a id="__codelineno-17-12" name="__codelineno-17-12" href="#__codelineno-17-12"></a><span class="p">)</span>
+</span></code></pre></div>
+<p><strong>Debugging with Fresh Data:</strong></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="c1"># Re-run search tool to see if results changed</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">fresh_search</span><span class="p">(</span><span class="n">input_data</span><span class="p">):</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>    <span class="c1"># Query current database</span>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a>    <span class="k">return</span> <span class="p">{</span><span class="o">...</span><span class="p">}</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a>
+</span><span id="__span-18-6"><a id="__codelineno-18-6" name="__codelineno-18-6" href="#__codelineno-18-6"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-18-7"><a id="__codelineno-18-7" name="__codelineno-18-7" href="#__codelineno-18-7"></a>    <span class="n">enable_tool_execution</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-18-8"><a id="__codelineno-18-8" name="__codelineno-18-8" href="#__codelineno-18-8"></a>    <span class="n">tool_execution_allowlist</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;search&quot;</span><span class="p">],</span>
+</span><span id="__span-18-9"><a id="__codelineno-18-9" name="__codelineno-18-9" href="#__codelineno-18-9"></a>    <span class="n">tool_registry</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;search&quot;</span><span class="p">:</span> <span class="n">fresh_search</span><span class="p">},</span>
+</span><span id="__span-18-10"><a id="__codelineno-18-10" name="__codelineno-18-10" href="#__codelineno-18-10"></a><span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="retrieval-re-execution">Retrieval Re-execution<a class="headerlink" href="#retrieval-re-execution" title="Permanent link">&para;</a></h2>
+<p>Re-query vector databases during replay to test with updated data.</p>
+<h3 id="3-tier-priority-system_1">3-Tier Priority System<a class="headerlink" href="#3-tier-priority-system_1" title="Permanent link">&para;</a></h3>
+<p>For retrieval spans, Prela uses this priority order:</p>
+<ol>
+<li><strong>Mock results</strong> (highest) - Always used if provided</li>
+<li><strong>Real execution</strong> - Re-queries if enabled, mocks not provided</li>
+<li><strong>Cached data</strong> (default) - Original retrieved documents</li>
+</ol>
+<h3 id="supported-vector-databases">Supported Vector Databases<a class="headerlink" href="#supported-vector-databases" title="Permanent link">&para;</a></h3>
+<ul>
+<li>✅ <strong>ChromaDB</strong> - Fully implemented</li>
+<li>⚠️ <strong>Pinecone</strong> - Requires embedding model (placeholder)</li>
+<li>⚠️ <strong>Qdrant</strong> - Requires embedding model (placeholder)</li>
+<li>⚠️ <strong>Weaviate</strong> - Requires class name (placeholder)</li>
+</ul>
+<h3 id="chromadb-example">ChromaDB Example<a class="headerlink" href="#chromadb-example" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">chromadb</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="c1"># Setup ChromaDB client</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="n">client</span> <span class="o">=</span> <span class="n">chromadb</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="n">collection</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_collection</span><span class="p">(</span><span class="s2">&quot;my_docs&quot;</span><span class="p">)</span>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a>
+</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="c1"># Add some documents</span>
+</span><span id="__span-19-8"><a id="__codelineno-19-8" name="__codelineno-19-8" href="#__codelineno-19-8"></a><span class="n">collection</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+</span><span id="__span-19-9"><a id="__codelineno-19-9" name="__codelineno-19-9" href="#__codelineno-19-9"></a>    <span class="n">documents</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Updated document 1&quot;</span><span class="p">,</span> <span class="s2">&quot;Updated document 2&quot;</span><span class="p">],</span>
+</span><span id="__span-19-10"><a id="__codelineno-19-10" name="__codelineno-19-10" href="#__codelineno-19-10"></a>    <span class="n">ids</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;2&quot;</span><span class="p">],</span>
+</span><span id="__span-19-11"><a id="__codelineno-19-11" name="__codelineno-19-11" href="#__codelineno-19-11"></a><span class="p">)</span>
+</span><span id="__span-19-12"><a id="__codelineno-19-12" name="__codelineno-19-12" href="#__codelineno-19-12"></a>
+</span><span id="__span-19-13"><a id="__codelineno-19-13" name="__codelineno-19-13" href="#__codelineno-19-13"></a><span class="c1"># Re-query with current data</span>
+</span><span id="__span-19-14"><a id="__codelineno-19-14" name="__codelineno-19-14" href="#__codelineno-19-14"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-19-15"><a id="__codelineno-19-15" name="__codelineno-19-15" href="#__codelineno-19-15"></a>    <span class="n">enable_retrieval_execution</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-19-16"><a id="__codelineno-19-16" name="__codelineno-19-16" href="#__codelineno-19-16"></a>    <span class="n">retrieval_client</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span>
+</span><span id="__span-19-17"><a id="__codelineno-19-17" name="__codelineno-19-17" href="#__codelineno-19-17"></a><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="query-override">Query Override<a class="headerlink" href="#query-override" title="Permanent link">&para;</a></h3>
+<p>Change retrieval query during replay:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="c1"># Original query: &quot;What is Python?&quot;</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="c1"># Test with different query</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>    <span class="n">enable_retrieval_execution</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a>    <span class="n">retrieval_client</span><span class="o">=</span><span class="n">collection</span><span class="p">,</span>
+</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a>    <span class="n">retrieval_query_override</span><span class="o">=</span><span class="s2">&quot;What is JavaScript?&quot;</span><span class="p">,</span>
+</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="use-cases_1">Use Cases<a class="headerlink" href="#use-cases_1" title="Permanent link">&para;</a></h3>
+<p><strong>Testing with Updated Vector Store:</strong></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="c1"># Original trace used old embeddings</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="c1"># Replay with newly indexed documents</span>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="n">new_client</span> <span class="o">=</span> <span class="n">chromadb</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="c1"># ... add updated documents ...</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a>    <span class="n">enable_retrieval_execution</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-21-8"><a id="__codelineno-21-8" name="__codelineno-21-8" href="#__codelineno-21-8"></a>    <span class="n">retrieval_client</span><span class="o">=</span><span class="n">new_client</span><span class="p">,</span>
+</span><span id="__span-21-9"><a id="__codelineno-21-9" name="__codelineno-21-9" href="#__codelineno-21-9"></a><span class="p">)</span>
+</span></code></pre></div>
+<p><strong>A/B Testing Retrieval Strategies:</strong></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">queries</span> <span class="o">=</span> <span class="p">[</span>
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>    <span class="s2">&quot;Direct question&quot;</span><span class="p">,</span>
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>    <span class="s2">&quot;Rephrased question&quot;</span><span class="p">,</span>
+</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>    <span class="s2">&quot;Keywords only&quot;</span><span class="p">,</span>
+</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a><span class="p">]</span>
+</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>
+</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a><span class="k">for</span> <span class="n">query</span> <span class="ow">in</span> <span class="n">queries</span><span class="p">:</span>
+</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a>    <span class="n">results</span><span class="p">[</span><span class="n">query</span><span class="p">]</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a>        <span class="n">enable_retrieval_execution</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-22-11"><a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a>        <span class="n">retrieval_client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+</span><span id="__span-22-12"><a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a>        <span class="n">retrieval_query_override</span><span class="o">=</span><span class="n">query</span><span class="p">,</span>
+</span><span id="__span-22-13"><a id="__codelineno-22-13" name="__codelineno-22-13" href="#__codelineno-22-13"></a>    <span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="cost-estimation">Cost Estimation<a class="headerlink" href="#cost-estimation" title="Permanent link">&para;</a></h2>
+<p>Estimate costs without making API calls:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="c1"># Load trace</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a><span class="n">trace</span> <span class="o">=</span> <span class="n">TraceLoader</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;traces.jsonl&quot;</span><span class="p">)</span>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="n">engine</span> <span class="o">=</span> <span class="n">ReplayEngine</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a><span class="c1"># Estimate cost of replay with different model</span>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_exact</span><span class="p">()</span>  <span class="c1"># No API calls</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>
+</span><span id="__span-23-8"><a id="__codelineno-23-8" name="__codelineno-23-8" href="#__codelineno-23-8"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Original cost: $</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">total_cost_usd</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-23-9"><a id="__codelineno-23-9" name="__codelineno-23-9" href="#__codelineno-23-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total tokens: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">total_tokens</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-23-10"><a id="__codelineno-23-10" name="__codelineno-23-10" href="#__codelineno-23-10"></a>
+</span><span id="__span-23-11"><a id="__codelineno-23-11" name="__codelineno-23-11" href="#__codelineno-23-11"></a><span class="c1"># Estimate new cost by inspecting token usage</span>
+</span><span id="__span-23-12"><a id="__codelineno-23-12" name="__codelineno-23-12" href="#__codelineno-23-12"></a><span class="c1"># (Actual API call costs will vary slightly)</span>
+</span></code></pre></div>
+<p><strong>Supported Models:</strong></p>
+<ul>
+<li>OpenAI: gpt-4, gpt-4o, gpt-3.5-turbo, o1-preview, o1-mini</li>
+<li>Anthropic: claude-3-opus, claude-3-sonnet, claude-3-haiku, claude-sonnet-4</li>
+</ul>
+<hr />
+<h2 id="loading-traces">Loading Traces<a class="headerlink" href="#loading-traces" title="Permanent link">&para;</a></h2>
+<h3 id="from-file">From File<a class="headerlink" href="#from-file" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prela.replay.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">TraceLoader</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="c1"># JSON file (single trace)</span>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">trace</span> <span class="o">=</span> <span class="n">TraceLoader</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;trace.json&quot;</span><span class="p">)</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="c1"># JSONL file (picks first trace)</span>
+</span><span id="__span-24-7"><a id="__codelineno-24-7" name="__codelineno-24-7" href="#__codelineno-24-7"></a><span class="n">trace</span> <span class="o">=</span> <span class="n">TraceLoader</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;traces.jsonl&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="from-dictionary">From Dictionary<a class="headerlink" href="#from-dictionary" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="c1"># From exported trace dict</span>
+</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="n">trace_dict</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>    <span class="s2">&quot;trace_id&quot;</span><span class="p">:</span> <span class="s2">&quot;abc-123&quot;</span><span class="p">,</span>
+</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a>    <span class="s2">&quot;spans&quot;</span><span class="p">:</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</span><span id="__span-25-5"><a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="p">}</span>
+</span><span id="__span-25-6"><a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="n">trace</span> <span class="o">=</span> <span class="n">TraceLoader</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">trace_dict</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="from-span-list">From Span List<a class="headerlink" href="#from-span-list" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="c1"># From list of Span objects</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prela.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Span</span>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="n">spans</span> <span class="o">=</span> <span class="p">[</span><span class="n">span1</span><span class="p">,</span> <span class="n">span2</span><span class="p">,</span> <span class="n">span3</span><span class="p">]</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="n">trace</span> <span class="o">=</span> <span class="n">TraceLoader</span><span class="o">.</span><span class="n">from_spans</span><span class="p">(</span><span class="n">spans</span><span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="cli-usage">CLI Usage<a class="headerlink" href="#cli-usage" title="Permanent link">&para;</a></h2>
+<p>Replay traces from the command line:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="c1"># Exact replay</span>
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a>prela<span class="w"> </span>replay<span class="w"> </span>trace.json
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a><span class="c1"># Modified replay with comparison</span>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a>prela<span class="w"> </span>replay<span class="w"> </span>trace.json<span class="w"> </span>--model<span class="w"> </span>gpt-4o<span class="w"> </span>--compare
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a><span class="c1"># Override multiple parameters</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>prela<span class="w"> </span>replay<span class="w"> </span>trace.json<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a><span class="w">  </span>--model<span class="w"> </span>claude-sonnet-4<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a><span class="w">  </span>--temperature<span class="w"> </span><span class="m">0</span>.7<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a><span class="w">  </span>--system-prompt<span class="w"> </span><span class="s2">&quot;You are an expert assistant&quot;</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a><span class="w">  </span>--output<span class="w"> </span>result.json
+</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a>
+</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="c1"># Save comparison report</span>
+</span><span id="__span-27-15"><a id="__codelineno-27-15" name="__codelineno-27-15" href="#__codelineno-27-15"></a>prela<span class="w"> </span>replay<span class="w"> </span>trace.json<span class="w"> </span>--model<span class="w"> </span>gpt-4o<span class="w"> </span>--compare<span class="w"> </span>--output<span class="w"> </span>comparison.json
+</span></code></pre></div>
+<p><strong>CLI Options:</strong></p>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>--model</code></td>
+<td>Override model</td>
+<td><code>--model gpt-4o</code></td>
+</tr>
+<tr>
+<td><code>--temperature</code></td>
+<td>Set temperature</td>
+<td><code>--temperature 0.7</code></td>
+</tr>
+<tr>
+<td><code>--system-prompt</code></td>
+<td>Override system prompt</td>
+<td><code>--system-prompt "Be concise"</code></td>
+</tr>
+<tr>
+<td><code>--max-tokens</code></td>
+<td>Set max tokens</td>
+<td><code>--max-tokens 1024</code></td>
+</tr>
+<tr>
+<td><code>--compare</code></td>
+<td>Compare with original</td>
+<td><code>--compare</code></td>
+</tr>
+<tr>
+<td><code>--output</code></td>
+<td>Save result to file</td>
+<td><code>--output result.json</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<h3 id="trace-tree-reconstruction">Trace Tree Reconstruction<a class="headerlink" href="#trace-tree-reconstruction" title="Permanent link">&para;</a></h3>
+<p>Traces are loaded and organized into a tree structure:</p>
+<pre class="mermaid"><code>graph TD
+    A[Root Span: Agent] --&gt; B[Span: LLM Call]
+    A --&gt; C[Span: Tool Call]
+    C --&gt; D[Span: LLM Call]
+    A --&gt; E[Span: Final LLM Call]
+
+    style A fill:#4F46E5
+    style B fill:#6366F1
+    style C fill:#818CF8
+    style D fill:#A5B4FC
+    style E fill:#6366F1</code></pre>
+<p><strong>Depth-First Execution:</strong></p>
+<p>Spans are replayed in depth-first order to match original execution:</p>
+<ol>
+<li>Root span starts</li>
+<li>First child executes completely (including its children)</li>
+<li>Second child executes completely</li>
+<li>And so on...</li>
+</ol>
+<p>This ensures parent-child dependencies are respected.</p>
+<h3 id="selective-api-calls">Selective API Calls<a class="headerlink" href="#selective-api-calls" title="Permanent link">&para;</a></h3>
+<p>The replay engine determines which spans need real API calls:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">_span_needs_modification</span><span class="p">(</span><span class="n">span</span><span class="p">):</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>    <span class="k">if</span> <span class="n">span</span><span class="o">.</span><span class="n">span_type</span> <span class="o">!=</span> <span class="n">SpanType</span><span class="o">.</span><span class="n">LLM</span><span class="p">:</span>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>        <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># Only LLM spans can be modified</span>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a>    <span class="k">if</span> <span class="n">modifications</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;model&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">span</span><span class="o">.</span><span class="n">model</span> <span class="o">!=</span> <span class="n">modifications</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]:</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a>        <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># Model changed</span>
+</span><span id="__span-28-7"><a id="__codelineno-28-7" name="__codelineno-28-7" href="#__codelineno-28-7"></a>
+</span><span id="__span-28-8"><a id="__codelineno-28-8" name="__codelineno-28-8" href="#__codelineno-28-8"></a>    <span class="k">if</span> <span class="n">modifications</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;temperature&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">span</span><span class="o">.</span><span class="n">temperature</span> <span class="o">!=</span> <span class="n">modifications</span><span class="p">[</span><span class="s2">&quot;temperature&quot;</span><span class="p">]:</span>
+</span><span id="__span-28-9"><a id="__codelineno-28-9" name="__codelineno-28-9" href="#__codelineno-28-9"></a>        <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># Temperature changed</span>
+</span><span id="__span-28-10"><a id="__codelineno-28-10" name="__codelineno-28-10" href="#__codelineno-28-10"></a>
+</span><span id="__span-28-11"><a id="__codelineno-28-11" name="__codelineno-28-11" href="#__codelineno-28-11"></a>    <span class="c1"># ... check other parameters</span>
+</span><span id="__span-28-12"><a id="__codelineno-28-12" name="__codelineno-28-12" href="#__codelineno-28-12"></a>
+</span><span id="__span-28-13"><a id="__codelineno-28-13" name="__codelineno-28-13" href="#__codelineno-28-13"></a>    <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># Use cached data</span>
+</span></code></pre></div>
+<p><strong>Optimization:</strong></p>
+<ul>
+<li>Only modified spans call APIs</li>
+<li>Cached data used for unchanged spans</li>
+<li>Significant cost and latency savings</li>
+</ul>
+<hr />
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<h3 id="1-enable-replay-selectively">1. Enable Replay Selectively<a class="headerlink" href="#1-enable-replay-selectively" title="Permanent link">&para;</a></h3>
+<p>Only enable replay capture when needed:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="c1"># Production: No replay (minimal overhead)</span>
+</span><span id="__span-29-2"><a id="__codelineno-29-2" name="__codelineno-29-2" href="#__codelineno-29-2"></a><span class="n">prela</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">service_name</span><span class="o">=</span><span class="s2">&quot;prod&quot;</span><span class="p">,</span> <span class="n">capture_for_replay</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-29-3"><a id="__codelineno-29-3" name="__codelineno-29-3" href="#__codelineno-29-3"></a>
+</span><span id="__span-29-4"><a id="__codelineno-29-4" name="__codelineno-29-4" href="#__codelineno-29-4"></a><span class="c1"># Development: Enable replay</span>
+</span><span id="__span-29-5"><a id="__codelineno-29-5" name="__codelineno-29-5" href="#__codelineno-29-5"></a><span class="n">prela</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">service_name</span><span class="o">=</span><span class="s2">&quot;dev&quot;</span><span class="p">,</span> <span class="n">capture_for_replay</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="2-use-exact-replay-first">2. Use Exact Replay First<a class="headerlink" href="#2-use-exact-replay-first" title="Permanent link">&para;</a></h3>
+<p>Always start with exact replay to verify completeness:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="n">engine</span> <span class="o">=</span> <span class="n">ReplayEngine</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_exact</span><span class="p">()</span>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="o">.</span><span class="n">spans</span><span class="p">:</span>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Warning: Trace has no replay data&quot;</span><span class="p">)</span>
+</span><span id="__span-30-6"><a id="__codelineno-30-6" name="__codelineno-30-6" href="#__codelineno-30-6"></a>    <span class="k">return</span>
+</span></code></pre></div>
+<h3 id="3-compare-semantically">3. Compare Semantically<a class="headerlink" href="#3-compare-semantically" title="Permanent link">&para;</a></h3>
+<p>Use semantic similarity for meaningful comparisons:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="n">comparison</span> <span class="o">=</span> <span class="n">compare_replays</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">modified</span><span class="p">)</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a><span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">comparison</span><span class="o">.</span><span class="n">differences</span><span class="p">:</span>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>    <span class="k">if</span> <span class="n">diff</span><span class="o">.</span><span class="n">field</span> <span class="o">==</span> <span class="s2">&quot;output&quot;</span> <span class="ow">and</span> <span class="n">diff</span><span class="o">.</span><span class="n">semantic_similarity</span><span class="p">:</span>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a>        <span class="k">if</span> <span class="n">diff</span><span class="o">.</span><span class="n">semantic_similarity</span> <span class="o">&lt;</span> <span class="mf">0.7</span><span class="p">:</span>
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⚠️  Significant divergence in </span><span class="si">{</span><span class="n">diff</span><span class="o">.</span><span class="n">span_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="4-batch-experiments">4. Batch Experiments<a class="headerlink" href="#4-batch-experiments" title="Permanent link">&para;</a></h3>
+<p>Test multiple configurations efficiently:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="n">models</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gpt-4&quot;</span><span class="p">,</span> <span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span> <span class="s2">&quot;claude-sonnet-4&quot;</span><span class="p">]</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a><span class="n">temperatures</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="p">:</span>
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a>    <span class="k">for</span> <span class="n">temp</span> <span class="ow">in</span> <span class="n">temperatures</span><span class="p">:</span>
+</span><span id="__span-32-7"><a id="__codelineno-32-7" name="__codelineno-32-7" href="#__codelineno-32-7"></a>        <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s2">_temp</span><span class="si">{</span><span class="n">temp</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-32-8"><a id="__codelineno-32-8" name="__codelineno-32-8" href="#__codelineno-32-8"></a>        <span class="n">results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-32-9"><a id="__codelineno-32-9" name="__codelineno-32-9" href="#__codelineno-32-9"></a>            <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+</span><span id="__span-32-10"><a id="__codelineno-32-10" name="__codelineno-32-10" href="#__codelineno-32-10"></a>            <span class="n">temperature</span><span class="o">=</span><span class="n">temp</span>
+</span><span id="__span-32-11"><a id="__codelineno-32-11" name="__codelineno-32-11" href="#__codelineno-32-11"></a>        <span class="p">)</span>
+</span><span id="__span-32-12"><a id="__codelineno-32-12" name="__codelineno-32-12" href="#__codelineno-32-12"></a>
+</span><span id="__span-32-13"><a id="__codelineno-32-13" name="__codelineno-32-13" href="#__codelineno-32-13"></a><span class="c1"># Compare all results</span>
+</span><span id="__span-32-14"><a id="__codelineno-32-14" name="__codelineno-32-14" href="#__codelineno-32-14"></a><span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span id="__span-32-15"><a id="__codelineno-32-15" name="__codelineno-32-15" href="#__codelineno-32-15"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">: $</span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">total_cost_usd</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">total_tokens</span><span class="si">}</span><span class="s2"> tokens&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="5-store-comparisons">5. Store Comparisons<a class="headerlink" href="#5-store-comparisons" title="Permanent link">&para;</a></h3>
+<p>Save comparison reports for analysis:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a><span class="n">comparison</span> <span class="o">=</span> <span class="n">compare_replays</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">modified</span><span class="p">)</span>
+</span><span id="__span-33-2"><a id="__codelineno-33-2" name="__codelineno-33-2" href="#__codelineno-33-2"></a>
+</span><span id="__span-33-3"><a id="__codelineno-33-3" name="__codelineno-33-3" href="#__codelineno-33-3"></a><span class="c1"># Save to JSON</span>
+</span><span id="__span-33-4"><a id="__codelineno-33-4" name="__codelineno-33-4" href="#__codelineno-33-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+</span><span id="__span-33-5"><a id="__codelineno-33-5" name="__codelineno-33-5" href="#__codelineno-33-5"></a><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;comparison.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span id="__span-33-6"><a id="__codelineno-33-6" name="__codelineno-33-6" href="#__codelineno-33-6"></a>    <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">({</span>
+</span><span id="__span-33-7"><a id="__codelineno-33-7" name="__codelineno-33-7" href="#__codelineno-33-7"></a>        <span class="s2">&quot;summary&quot;</span><span class="p">:</span> <span class="n">comparison</span><span class="o">.</span><span class="n">generate_summary</span><span class="p">(),</span>
+</span><span id="__span-33-8"><a id="__codelineno-33-8" name="__codelineno-33-8" href="#__codelineno-33-8"></a>        <span class="s2">&quot;differences&quot;</span><span class="p">:</span> <span class="p">[</span>
+</span><span id="__span-33-9"><a id="__codelineno-33-9" name="__codelineno-33-9" href="#__codelineno-33-9"></a>            <span class="p">{</span>
+</span><span id="__span-33-10"><a id="__codelineno-33-10" name="__codelineno-33-10" href="#__codelineno-33-10"></a>                <span class="s2">&quot;span&quot;</span><span class="p">:</span> <span class="n">diff</span><span class="o">.</span><span class="n">span_name</span><span class="p">,</span>
+</span><span id="__span-33-11"><a id="__codelineno-33-11" name="__codelineno-33-11" href="#__codelineno-33-11"></a>                <span class="s2">&quot;field&quot;</span><span class="p">:</span> <span class="n">diff</span><span class="o">.</span><span class="n">field</span><span class="p">,</span>
+</span><span id="__span-33-12"><a id="__codelineno-33-12" name="__codelineno-33-12" href="#__codelineno-33-12"></a>                <span class="s2">&quot;similarity&quot;</span><span class="p">:</span> <span class="n">diff</span><span class="o">.</span><span class="n">semantic_similarity</span>
+</span><span id="__span-33-13"><a id="__codelineno-33-13" name="__codelineno-33-13" href="#__codelineno-33-13"></a>            <span class="p">}</span>
+</span><span id="__span-33-14"><a id="__codelineno-33-14" name="__codelineno-33-14" href="#__codelineno-33-14"></a>            <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">comparison</span><span class="o">.</span><span class="n">differences</span>
+</span><span id="__span-33-15"><a id="__codelineno-33-15" name="__codelineno-33-15" href="#__codelineno-33-15"></a>        <span class="p">]</span>
+</span><span id="__span-33-16"><a id="__codelineno-33-16" name="__codelineno-33-16" href="#__codelineno-33-16"></a>    <span class="p">},</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h2>
+<h3 id="1-tool-side-effects">1. Tool Side Effects<a class="headerlink" href="#1-tool-side-effects" title="Permanent link">&para;</a></h3>
+<p>Tools with side effects cannot be replayed safely:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="c1"># ❌ Cannot replay safely</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">send_email</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>    <span class="n">smtp</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">to</span><span class="p">,</span> <span class="n">subject</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>  <span class="c1"># Side effect!</span>
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a>
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="c1"># ✅ Use mocking for side effects</span>
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-34-7"><a id="__codelineno-34-7" name="__codelineno-34-7" href="#__codelineno-34-7"></a>    <span class="n">mock_tool_responses</span><span class="o">=</span><span class="p">{</span>
+</span><span id="__span-34-8"><a id="__codelineno-34-8" name="__codelineno-34-8" href="#__codelineno-34-8"></a>        <span class="s2">&quot;send_email&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;sent&quot;</span><span class="p">,</span> <span class="s2">&quot;message_id&quot;</span><span class="p">:</span> <span class="s2">&quot;mock-123&quot;</span><span class="p">}</span>
+</span><span id="__span-34-9"><a id="__codelineno-34-9" name="__codelineno-34-9" href="#__codelineno-34-9"></a>    <span class="p">}</span>
+</span><span id="__span-34-10"><a id="__codelineno-34-10" name="__codelineno-34-10" href="#__codelineno-34-10"></a><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="2-streaming-responses">2. Streaming Responses<a class="headerlink" href="#2-streaming-responses" title="Permanent link">&para;</a></h3>
+<p>Streaming is supported with real-time output:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prela.replay</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReplayEngine</span>
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">prela.replay.loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">TraceLoader</span>
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a><span class="c1"># Load trace</span>
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a><span class="n">trace</span> <span class="o">=</span> <span class="n">TraceLoader</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">&quot;trace.json&quot;</span><span class="p">)</span>
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a><span class="n">engine</span> <span class="o">=</span> <span class="n">ReplayEngine</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a><span class="c1"># Replay with streaming enabled</span>
+</span><span id="__span-35-9"><a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">on_chunk</span><span class="p">(</span><span class="n">chunk</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+</span><span id="__span-35-10"><a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-35-11"><a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a>
+</span><span id="__span-35-12"><a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a><span class="n">result</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">replay_with_modifications</span><span class="p">(</span>
+</span><span id="__span-35-13"><a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a>    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o&quot;</span><span class="p">,</span>
+</span><span id="__span-35-14"><a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a>    <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-35-15"><a id="__codelineno-35-15" name="__codelineno-35-15" href="#__codelineno-35-15"></a>    <span class="n">stream_callback</span><span class="o">=</span><span class="n">on_chunk</span>
+</span><span id="__span-35-16"><a id="__codelineno-35-16" name="__codelineno-35-16" href="#__codelineno-35-16"></a><span class="p">)</span>
+</span></code></pre></div>
+<p><strong>Note</strong>: Streaming works for both OpenAI and Anthropic models during replay execution.</p>
+<h3 id="3-vendor-support">3. Vendor Support<a class="headerlink" href="#3-vendor-support" title="Permanent link">&para;</a></h3>
+<p>Currently supports OpenAI and Anthropic only:</p>
+<ul>
+<li>✅ OpenAI (gpt-<em>, o1-</em>)</li>
+<li>✅ Anthropic (claude-*)</li>
+<li>❌ Other vendors (use exact replay only)</li>
+</ul>
+<hr />
+<h2 id="performance">Performance<a class="headerlink" href="#performance" title="Permanent link">&para;</a></h2>
+<h3 id="exact-replay">Exact Replay<a class="headerlink" href="#exact-replay" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Speed</strong>: ~1ms per span</li>
+<li><strong>Memory</strong>: O(n) where n = number of spans</li>
+<li><strong>Cost</strong>: $0 (no API calls)</li>
+</ul>
+<h3 id="modified-replay">Modified Replay<a class="headerlink" href="#modified-replay" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Speed</strong>: Depends on API latency</li>
+<li><strong>Memory</strong>: O(n) + API response buffers</li>
+<li><strong>Cost</strong>: Only modified LLM spans charged</li>
+</ul>
+<h3 id="comparison">Comparison<a class="headerlink" href="#comparison" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Speed</strong>: ~10-50ms per comparison (with embeddings)</li>
+<li><strong>Memory</strong>: O(n) for difference list</li>
+<li><strong>Accuracy</strong>: 70%+ similarity for semantically similar texts</li>
+</ul>
+<hr />
+<h2 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h2>
+<p>See <a href="../../api/replay/">Replay API Documentation</a> for detailed API reference.</p>
+<hr />
+<h2 id="next-steps">Next Steps<a class="headerlink" href="#next-steps" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong><a href="../../examples/replay/">Replay Examples</a></strong>: Practical examples and recipes</li>
+<li><strong><a href="../../cli/commands/#replay">CLI Commands</a></strong>: Command-line replay reference</li>
+<li><strong><a href="../../api/replay/">API Reference</a></strong>: Complete API documentation</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/prela/prela" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/prela" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.sections", "navigation.top", "navigation.tracking", "search.suggest", "search.highlight", "content.tabs.link", "content.code.annotation", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

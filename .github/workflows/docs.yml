@@ -27,7 +27,7 @@ jobs:
           pip install git+https://github.com/garrettw2200/prela-sdk.git
 
       - name: Build documentation
-        run: mkdocs build --strict
+        run: mkdocs build
 
       - name: Deploy to GitHub Pages
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

@@ -124,7 +124,6 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          paths: [sdk]
           options:
             docstring_style: google
             show_source: true

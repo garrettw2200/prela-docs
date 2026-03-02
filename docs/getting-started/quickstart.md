@@ -4,7 +4,17 @@ Get your first trace in 5 minutes with Prela's auto-instrumentation.
 
 ---
 
-## Step 1: Install Prela
+## Step 1: Get Your API Key
+
+Sign in at [dashboard.prela.dev](https://dashboard.prela.dev), go to **API Keys**, and create a new key. Then set it as an environment variable:
+
+```bash
+export PRELA_API_KEY="prela_sk_..."
+```
+
+---
+
+## Step 2: Install Prela
 
 ```bash
 pip install prela
@@ -12,22 +22,23 @@ pip install prela
 
 ---
 
-## Step 2: Initialize Prela
+## Step 3: Initialize Prela
 
 Add one line to your application:
 
 ```python
 import prela
 
-# Initialize with service name
+# Initialize with your service name
+# Traces are sent to Prela Cloud automatically when PRELA_API_KEY is set
 prela.init(service_name="my-agent")
 ```
 
-That's it! Prela will automatically instrument any LLM SDKs you use.
+That's it! Prela will automatically instrument any LLM SDKs you use and send traces to your Prela dashboard.
 
 ---
 
-## Step 3: Run Your Agent
+## Step 4: Run Your Agent
 
 Use your LLM SDK as normal:
 
@@ -106,9 +117,9 @@ Use your LLM SDK as normal:
 
 ---
 
-## Step 4: View Your Traces
+## Step 5: View Your Traces
 
-By default, traces are printed to the console:
+Traces appear in your [Prela dashboard](https://dashboard.prela.dev) in real time. If `PRELA_API_KEY` is not set, traces fall back to printing to the console:
 
 ```json
 {
@@ -244,6 +255,7 @@ prela search --status error --service my-agent
 
 Now that you have basic tracing working:
 
+- [API Keys](https://dashboard.prela.dev/api-keys) - Manage your API keys
 - [Configuration](configuration.md) - Learn about all configuration options
 - [Concepts](../concepts/tracing.md) - Understand how tracing works
 - [Integrations](../integrations/openai.md) - Deep dive into each integration
@@ -257,9 +269,10 @@ Now that you have basic tracing working:
 
 Check that:
 
-1. You called `prela.init()` before using your LLM SDK
-2. Your LLM SDK is installed (`pip list | grep anthropic`)
-3. Auto-instrumentation is enabled (default)
+1. `PRELA_API_KEY` is set in your environment (`echo $PRELA_API_KEY`)
+2. You called `prela.init()` before using your LLM SDK
+3. Your LLM SDK is installed (`pip list | grep anthropic`)
+4. Auto-instrumentation is enabled (default)
 
 ### Want to disable auto-instrumentation?
 

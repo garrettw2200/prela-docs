@@ -16,9 +16,9 @@ graph LR
     A[Span Collection] --> B{Sampled?}
     B -->|Yes| C[Exporter]
     B -->|No| D[Discard]
-    C --> E[Console]
-    C --> F[File]
-    C --> G[HTTP]
+    C --> E[Prela Cloud]
+    C --> F[Console]
+    C --> G[File]
     C --> H[Custom]
 ```
 
@@ -26,9 +26,48 @@ graph LR
 
 | Exporter | Use Case | Output |
 |----------|----------|--------|
+| Cloud (default) | Production — requires `PRELA_API_KEY` | Prela dashboard |
 | `ConsoleExporter` | Development, debugging | Terminal output |
-| `FileExporter` | Production, analysis | JSONL files |
-| Custom | Integration | Your backend |
+| `FileExporter` | Local archiving | JSONL files |
+| Custom | Third-party integration | Your backend |
+
+## Prela Cloud Exporter
+
+Sends traces to your Prela dashboard over HTTPS. This is the default when `PRELA_API_KEY` is set.
+
+### Setup
+
+Generate an API key at [dashboard.prela.dev/api-keys](https://dashboard.prela.dev/api-keys):
+
+```bash
+export PRELA_API_KEY="prela_sk_..."
+```
+
+```python
+import prela
+
+# Cloud exporter is selected automatically
+prela.init(service_name="my-agent")
+```
+
+### How It Works
+
+- Spans are authenticated with your API key via `Authorization: Bearer <key>`
+- Traces are sent to the Prela ingest gateway in real time
+- Your monthly trace quota is tracked per account based on your plan tier
+
+### Rate Limits
+
+| Plan | Monthly traces |
+|------|---------------|
+| Free | 50,000 |
+| Lunch Money | 100,000 |
+| Pro | 1,000,000 |
+| Enterprise | Unlimited |
+
+Upgrade at [dashboard.prela.dev/billing](https://dashboard.prela.dev/billing).
+
+---
 
 ## ConsoleExporter
 
@@ -353,12 +392,13 @@ class HTTPExporter(BatchExporter):
             return ExportResult.FAILURE
 
 
-# Use with batching
+# Use with batching (for custom backends)
+# For Prela Cloud, just set PRELA_API_KEY — no custom exporter needed
 tracer = init(
     service_name="my-app",
     exporter=HTTPExporter(
-        endpoint="https://api.example.com/traces",
-        api_key="your-api-key",
+        endpoint="https://your-backend.example.com/traces",
+        api_key="your-backend-api-key",
         batch_size=50  # Send in batches of 50
     )
 )

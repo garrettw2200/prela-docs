@@ -4,6 +4,18 @@ Configure Prela using function parameters or environment variables.
 
 ---
 
+## API Key
+
+To send traces to Prela Cloud, set your API key as an environment variable. Generate a key at [dashboard.prela.dev/api-keys](https://dashboard.prela.dev/api-keys).
+
+```bash
+export PRELA_API_KEY="prela_sk_..."
+```
+
+When `PRELA_API_KEY` is present, `prela.init()` automatically uses the cloud exporter. Without it, traces fall back to the console exporter.
+
+---
+
 ## Basic Configuration
 
 ### Service Name
@@ -31,6 +43,30 @@ prela.init()  # Uses PRELA_SERVICE_NAME
 ## Exporters
 
 Choose where traces are sent.
+
+### Prela Cloud Exporter (Recommended)
+
+Send traces to your Prela dashboard. Requires a `PRELA_API_KEY`:
+
+```bash
+export PRELA_API_KEY="prela_sk_..."
+```
+
+```python
+import prela
+
+# Cloud exporter is used automatically when PRELA_API_KEY is set
+prela.init(service_name="my-agent")
+```
+
+Traces are authenticated with your API key and subject to your plan's monthly limits:
+
+| Plan | Monthly trace limit |
+|------|-------------------|
+| Free | 50,000 |
+| Lunch Money | 100,000 |
+| Pro | 1,000,000 |
+| Enterprise | Unlimited |
 
 ### Console Exporter
 
@@ -221,8 +257,9 @@ All configuration can be set via environment variables:
 
 | Variable | Description | Default |
 |----------|-------------|---------|
+| `PRELA_API_KEY` | API key for Prela Cloud (generate at [dashboard.prela.dev/api-keys](https://dashboard.prela.dev/api-keys)) | `None` |
 | `PRELA_SERVICE_NAME` | Service name | `"unknown"` |
-| `PRELA_EXPORTER` | Exporter type (`"console"`, `"file"`) | `"console"` |
+| `PRELA_EXPORTER` | Exporter type (`"cloud"`, `"console"`, `"file"`) | `"cloud"` if `PRELA_API_KEY` set, else `"console"` |
 | `PRELA_SAMPLE_RATE` | Sampling rate (0.0-1.0) | `1.0` |
 | `PRELA_AUTO_INSTRUMENT` | Enable auto-instrumentation | `true` |
 | `PRELA_DEBUG` | Enable debug logging | `false` |
@@ -252,21 +289,27 @@ prela.init()
 
 ## Production Configuration
 
-Recommended settings for production:
+Recommended settings for production — send to Prela Cloud with sampling:
+
+```bash
+export PRELA_API_KEY="prela_sk_..."
+export PRELA_SERVICE_NAME="production-agent"
+export PRELA_SAMPLE_RATE="0.1"
+export PRELA_DEBUG="false"
+```
 
 ```python
 import prela
 
+# Uses PRELA_API_KEY automatically for cloud export
 prela.init(
     service_name="production-agent",
-    exporter="file",
-    directory="/var/log/prela/traces",
     sample_rate=0.1,  # 10% sampling
     debug=False
 )
 ```
 
-With environment variables:
+If you prefer to export to a local file instead:
 
 ```bash
 export PRELA_SERVICE_NAME="production-agent"

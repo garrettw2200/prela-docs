@@ -28,10 +28,11 @@ Building AI agents is hard. Understanding what they're doing is even harder. Pre
 
 ## Quick Start
 
-Install Prela:
+Get your API key at [dashboard.prela.dev/api-keys](https://dashboard.prela.dev/api-keys), then:
 
 ```bash
 pip install prela
+export PRELA_API_KEY="prela_sk_..."
 ```
 
 Add one line to your code:
@@ -41,6 +42,7 @@ import prela
 from anthropic import Anthropic
 
 # Initialize Prela - auto-instruments all LLM SDKs
+# Traces are sent to Prela Cloud automatically
 prela.init(service_name="my-agent")
 
 # Use your LLM SDK normally - tracing happens automatically!
@@ -81,14 +83,15 @@ graph TB
     end
 
     subgraph "Outputs"
-        G -->|writes| H[Console]
-        G -->|writes| I[Files]
-        G -->|sends| J[OTLP Backend]
+        G -->|sends via PRELA_API_KEY| H[Prela Cloud]
+        G -->|writes| I[Console]
+        G -->|writes| J[Files]
     end
 
     style E fill:#4F46E5
     style F fill:#6366F1
     style G fill:#818CF8
+    style H fill:#10B981
 ```
 
 ---
@@ -300,9 +303,10 @@ See [Replay Concepts](concepts/replay.md) and [Replay Examples](examples/replay.
 
 Choose your output:
 
+- **Prela Cloud**: Full dashboard, search, and analysis — set `PRELA_API_KEY`
 - **Console**: Pretty-printed JSON for development
-- **File**: JSONL format for production (with rotation)
-- **OTLP**: OpenTelemetry protocol for cloud backends
+- **File**: JSONL format for local archiving (with rotation)
+- **OTLP**: OpenTelemetry protocol for third-party backends
 
 ---
 

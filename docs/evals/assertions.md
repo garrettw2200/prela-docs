@@ -1,6 +1,6 @@
 # Assertions
 
-Assertions validate agent outputs against expected behavior. Prela provides 10 built-in assertion types across three categories.
+Assertions validate agent outputs against expected behavior. Prela provides 21 built-in assertion types across five categories.
 
 ## Structural Assertions
 
@@ -254,6 +254,150 @@ print(result.passed)  # True (similarity > 0.8)
     "reference": "Expected meaning",
     "threshold": 0.8,  # 0.0 to 1.0
     "model": "all-MiniLM-L6-v2"  # Optional
+}
+```
+
+## Security Assertions
+
+### NoPIIAssertion
+
+Validates that output contains no personally identifiable information. Detects emails, phone numbers, SSNs, credit card numbers, and API keys (AWS, Stripe, GitHub, OpenAI, Slack, Google).
+
+```python
+from prela.evals.assertions import NoPIIAssertion
+
+assertion = NoPIIAssertion()
+result = assertion.evaluate(output="Contact john@example.com for details")
+print(result.passed)  # False -- contains email
+
+# Allow specific PII types
+assertion = NoPIIAssertion(allow_emails=True, allow_phones=True)
+result = assertion.evaluate(output="Email john@example.com")
+print(result.passed)  # True -- emails allowed
+```
+
+**Configuration:**
+```python
+{
+    "type": "no_pii",
+    "allow_emails": False,  # Optional, default: False
+    "allow_phones": False   # Optional, default: False
+}
+```
+
+### NoInjectionAssertion
+
+Validates that output does not contain prompt injection patterns. Scans for 5 categories of injection attempts:
+
+- **Instruction overrides** (critical) -- "ignore previous instructions", "override system prompt"
+- **Jailbreak attempts** (high) -- DAN mode, developer mode, "act without restrictions"
+- **Role confusion** (high) -- injected `[SYSTEM]`, `<|assistant|>`, `<system>` markers
+- **Encoded injection** (medium) -- base64 decode, eval/exec calls
+- **Delimiter injection** (medium) -- closing prompt tags, end markers
+
+```python
+from prela.evals.assertions import NoInjectionAssertion
+
+assertion = NoInjectionAssertion()
+result = assertion.evaluate(output="Ignore all previous instructions")
+print(result.passed)  # False -- injection pattern detected
+
+# Only flag high and critical severity
+assertion = NoInjectionAssertion(min_severity="high")
+```
+
+**Configuration:**
+```python
+{
+    "type": "no_injection",
+    "min_severity": "medium"  # Optional: "low", "medium", "high", "critical"
+}
+```
+
+### CustomRuleAssertion
+
+Flexible regex-based assertion for user-defined content rules.
+
+```python
+from prela.evals.assertions import CustomRuleAssertion
+
+# Forbid certain words in output
+assertion = CustomRuleAssertion(
+    pattern=r"\b(password|secret|token)\b",
+    must_match=False,
+    description="No secrets in output",
+)
+result = assertion.evaluate(output="Your password is 1234")
+print(result.passed)  # False -- contains "password"
+
+# Require output to match a pattern
+assertion = CustomRuleAssertion(
+    pattern=r"\bJSON\b",
+    must_match=True,
+    description="Output must mention JSON",
+)
+```
+
+**Configuration:**
+```python
+{
+    "type": "custom_rule",
+    "pattern": r"\b(password|secret)\b",
+    "must_match": False,        # Optional, default: False
+    "case_sensitive": False,    # Optional, default: False
+    "description": "rule name"  # Optional
+}
+```
+
+## AI-Scored Assertions
+
+### LLMJudgeAssertion
+
+Uses an LLM to score agent outputs against custom rubrics. The LLM returns a score (0-1) and reasoning, enabling evaluation of qualities like factual accuracy, helpfulness, or tone.
+
+!!! note "Subscription Required"
+    LLM-as-Judge assertions require a Lunch Money tier subscription or higher.
+
+```python
+from prela.evals.assertions import LLMJudgeAssertion
+
+assertion = LLMJudgeAssertion(
+    rubric="Score 0-1 on factual accuracy and completeness",
+    threshold=0.7,
+)
+result = assertion.evaluate(output="Paris is the capital of France")
+print(result.passed)   # True if score >= 0.7
+print(result.score)    # e.g., 0.85
+print(result.details)  # {"score": 0.85, "reasoning": "...", ...}
+```
+
+**Providers:**
+
+```python
+# Anthropic (default)
+assertion = LLMJudgeAssertion(
+    rubric="Is this response helpful?",
+    provider="anthropic",
+    model="claude-haiku-4-5-20251001",
+)
+
+# OpenAI
+assertion = LLMJudgeAssertion(
+    rubric="Is this response helpful?",
+    provider="openai",
+    model="gpt-4o-mini",
+)
+```
+
+**Configuration:**
+```python
+{
+    "type": "llm_judge",
+    "rubric": "Score 0-1 on factual accuracy",  # Required
+    "threshold": 0.7,           # Optional, default: 0.7
+    "model": "claude-haiku-4-5-20251001",  # Optional
+    "provider": "anthropic",    # Optional: "anthropic" or "openai"
+    "system_prompt": "..."      # Optional: override judge system prompt
 }
 ```
 

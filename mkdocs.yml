@@ -11,6 +11,7 @@ docs_dir: docs
 
 theme:
   name: material
+  favicon: assets/favicon.png
   palette:
     - scheme: default
       primary: indigo
@@ -51,6 +52,9 @@ nav:
     - Exporters: concepts/exporters.md
     - Replay: concepts/replay.md
     - Replay Advanced: concepts/replay-advanced.md
+    - Guardrails: concepts/guardrails.md
+    - Alerting: concepts/alerting.md
+    - Prompt Management: concepts/prompts.md
   - Integrations:
     - OpenAI: integrations/openai.md
     - Anthropic: integrations/anthropic.md
@@ -89,6 +93,8 @@ nav:
     - Replay: examples/replay.md
     - Replay Multi-Agent: examples/replay-multi-agent.md
     - Replay with Tools: examples/replay-with-tools.md
+  - Guides:
+    - Drift Detection: guides/DRIFT_DETECTION_QUICKSTART.md
   - Contributing: contributing.md
   - Changelog: changelog.md
 

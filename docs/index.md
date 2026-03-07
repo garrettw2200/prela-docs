@@ -19,7 +19,10 @@ Building AI agents is hard. Understanding what they're doing is even harder. Pre
 - **🔍 Automatic Tracing**: Zero-code instrumentation for 10 frameworks (OpenAI, Anthropic, LangChain, LlamaIndex, CrewAI, AutoGen, LangGraph, Swarm, n8n)
 - **🤖 Multi-Agent Support**: First-class support for multi-agent orchestration, conversations, and handoffs
 - **📊 Complete Visibility**: See every LLM call, tool invocation, agent decision, and state change
-- **🧪 Built-in Testing**: Comprehensive evaluation framework with 17+ assertion types including multi-agent and workflow patterns
+- **🧪 Built-in Testing**: Comprehensive evaluation framework with 21+ assertion types including security, LLM-as-Judge, multi-agent, and workflow patterns
+- **🛡️ Guardrails**: Real-time safety enforcement with PII detection, prompt injection blocking, content filtering, and custom guards
+- **🔔 Alerting**: Metric-based alerts (error rate, latency, cost, token usage) with Slack, Email, and PagerDuty notifications
+- **📝 Prompt Management**: Versioned prompt templates with variable substitution and stage-based promotion (development, staging, production)
 - **🔄 Deterministic Replay**: Re-execute traces with different models, compare outputs, test tool execution
 - **🚀 Production Ready**: 1,068 tests, 100% coverage on new code, type-safe, minimal dependencies
 - **⚡ Minimal Overhead**: ~0.5-2ms per span, smart sampling, efficient serialization
@@ -424,6 +427,9 @@ JSONReporter("analysis/results.json").report(eval_result)
 - [Context Propagation](concepts/context.md) - Thread and async safety
 - [Sampling](concepts/sampling.md) - Control trace volume
 - [Exporters](concepts/exporters.md) - Where traces go
+- [Guardrails](concepts/guardrails.md) - Real-time safety enforcement
+- [Alerting](concepts/alerting.md) - Metric-based alerting and notifications
+- [Prompt Management](concepts/prompts.md) - Versioned prompt templates
 
 ### Integrations
 
@@ -448,7 +454,7 @@ JSONReporter("analysis/results.json").report(eval_result)
 ### Evaluation
 - [Overview](evals/overview.md) - Testing framework
 - [Writing Tests](evals/writing-tests.md) - Create test cases
-- [Assertions](evals/assertions.md) - 10 assertion types for agent outputs
+- [Assertions](evals/assertions.md) - 21 assertion types for agent outputs
 - [Multi-Agent Assertions](evals/multi-agent-assertions.md) - 7 assertion types for multi-agent systems
 - [N8N Workflow Evaluation](evals/n8n-workflows.md) - Test n8n workflows systematically
 - [Running Evaluations](evals/running.md) - Execution modes

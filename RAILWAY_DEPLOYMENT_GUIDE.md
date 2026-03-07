@@ -48,7 +48,9 @@ Save these in a secure location (password manager).
 
 ## Part 1: External Services Setup (60 minutes)
 
-### ☐ 1.1 ClickHouse Cloud (15 min)
+### ☐ 1.1 ClickHouse (15 min)
+
+> **Alternative:** Self-host ClickHouse on your own server for free. See `CLICKHOUSE_SELF_HOST_IMPLEMENTATION.md` and Part 7.5 below. The current production setup uses a self-hosted instance at `clickhouse.prela.dev` via Cloudflare Tunnel.
 
 **URL**: https://clickhouse.com/cloud
 
@@ -91,42 +93,9 @@ curl 'https://YOUR_HOST:8443/?query=CREATE%20DATABASE%20IF%20NOT%20EXISTS%20prel
 
 ---
 
-### ☐ 1.2 Upstash Kafka (15 min)
+### ~~☐ 1.2 Upstash Kafka~~ -- REMOVED
 
-**URL**: https://console.upstash.com/kafka
-
-**Steps**:
-1. Create account or login
-2. Click "Create Cluster"
-3. Configuration:
-   - **Name**: `prela-production`
-   - **Region**: US East (Virginia)
-   - **Type**: Pay as you go (free tier: 10k msgs/day)
-
-4. Wait for provisioning (~1 minute)
-
-5. Create topic: **traces**
-   - Click "Topics" → "Create Topic"
-   - **Name**: `traces`
-   - **Partitions**: 3
-   - **Retention Time**: 604800000 ms (7 days)
-   - **Retention Size**: -1 (unlimited)
-   - **Max Message Size**: 1000012 bytes
-
-6. Create topic: **spans**
-   - **Name**: `spans`
-   - **Partitions**: 6
-   - **Retention Time**: 604800000 ms (7 days)
-
-7. Go to cluster → "Details" tab and save:
-
-```bash
-KAFKA_BOOTSTRAP_SERVERS=
-KAFKA_USERNAME=
-KAFKA_PASSWORD=
-```
-
-**✓ Checkpoint**: Two topics created (traces, spans) and connection details saved
+> **Kafka was removed in the simplified architecture (Feb 1, 2026).** Ingest Gateway writes directly to ClickHouse via HTTP. No message queue needed.
 
 ---
 
@@ -310,63 +279,67 @@ STRIPE_PUBLISHABLE_KEY=pk_test_
 
 ### ☐ 2.4 Run Database Migrations (15 min)
 
-**Option A: Using Railway CLI** (Recommended)
+> **How Railway DB access works**: The `DATABASE_URL` in service variables uses the private `postgres.railway.internal` hostname — only reachable from within Railway's network. To run migrations locally, use the **public proxy URL** from the Postgres service's own variables (`DATABASE_PUBLIC_URL`).
 
+**Getting the public URL**:
 ```bash
-# Install Railway CLI
-npm install -g @railway/cli
-
-# Login
-railway login
-
-# Link to your project
-railway link
-# Select: prela-production
-
-# Connect to Postgres service
-railway run --service prela-postgres bash
+# Must be linked to the api-gateway service (or any service in the project)
+cd /path/to/prela/backend/services/api-gateway
+railway variables --service Postgres --json | python3 -c "
+import sys, json; d = json.load(sys.stdin)
+print(d['DATABASE_PUBLIC_URL'])
+"
 ```
 
-Once connected, get the DATABASE_URL:
-```bash
-echo $DATABASE_URL
+This outputs something like:
+```
+postgresql://postgres:<password>@switchyard.proxy.rlwy.net:<port>/railway
 ```
 
-Copy that URL and use it with psql:
+**Run all migrations** (run from repo root):
 ```bash
-psql "$DATABASE_URL"
+PUBLIC_DB="postgresql://postgres:<password>@switchyard.proxy.rlwy.net:<port>/railway"
+
+for f in backend/migrations/*.sql; do
+  echo "Running $f..."
+  psql "$PUBLIC_DB" -f "$f"
+done
 ```
 
-Now run migrations:
-```sql
--- Paste contents of backend/migrations/001_create_users_and_subscriptions.sql
--- Then paste contents of backend/migrations/002_update_subscription_tiers.sql
+Or run a single migration:
+```bash
+psql "$PUBLIC_DB" -f backend/migrations/001_create_users_and_subscriptions.sql
 ```
 
 **Option B: Using TablePlus/pgAdmin/DBeaver**
 
-1. Click on Postgres service → "Connect" → Copy connection details
-2. Open your SQL client and connect
-3. Open and execute:
-   - `backend/migrations/001_create_users_and_subscriptions.sql`
-   - `backend/migrations/002_update_subscription_tiers.sql`
+1. In Railway dashboard → Postgres service → **Connect** tab → copy the public connection string
+2. Open your SQL client and connect using those credentials
+3. Open and execute each file in `backend/migrations/` in order
 
 **Verify migrations**:
-```sql
+```bash
+psql "$PUBLIC_DB" -c "
 SELECT table_name
 FROM information_schema.tables
 WHERE table_schema = 'public'
 ORDER BY table_name;
+"
 ```
 
-Expected tables:
+Expected tables (after all migrations):
 - api_keys
+- data_sources
+- project_teams
 - subscriptions
+- team_invitations
+- team_members
+- teams
 - usage_overages
 - usage_records
 - users
 
-**✓ Checkpoint**: All 5 tables created successfully
+**✓ Checkpoint**: All tables created successfully
 
 ---
 
@@ -385,15 +358,6 @@ CLICKHOUSE_PORT=8443
 CLICKHOUSE_USER=default
 CLICKHOUSE_PASSWORD=YOUR_PASSWORD_HERE
 CLICKHOUSE_DATABASE=prela
-
-# ============================================
-# KAFKA (from Part 1.2)
-# ============================================
-KAFKA_BOOTSTRAP_SERVERS=xxxxx-us1-kafka.upstash.io:9092
-KAFKA_USERNAME=YOUR_USERNAME_HERE
-KAFKA_PASSWORD=YOUR_PASSWORD_HERE
-KAFKA_TOPIC_TRACES=traces
-KAFKA_TOPIC_SPANS=spans
 
 # ============================================
 # CLERK (from Part 1.3)
@@ -480,7 +444,10 @@ RATE_LIMIT_PER_MINUTE=1000
 ```
 
 **Deploy**:
-- Railway will auto-deploy after you add variables
+- **Preferred:** Push to GitHub — Railway auto-deploys on every push to `main`
+- **Manual fallback:** `cd` into the service directory and run `railway up`
+  - Each service is linked separately; Railway uses CWD as the upload root
+  - Do NOT run `railway up` from a parent directory (e.g. `backend/`) — it won't find the Dockerfile
 - Wait 3-5 minutes for build
 - Check "Deployments" tab for status
 
@@ -574,11 +541,6 @@ CLICKHOUSE_USER=default
 CLICKHOUSE_PASSWORD=
 CLICKHOUSE_DATABASE=prela
 
-# Kafka (for n8n routes)
-KAFKA_BOOTSTRAP_SERVERS=
-KAFKA_USERNAME=
-KAFKA_PASSWORD=
-
 # JWT Authentication (use generated secret)
 JWT_SECRET=
 JWT_ALGORITHM=HS256
@@ -610,6 +572,8 @@ RATE_LIMIT_PER_MINUTE=100
 ```
 
 **Deploy**:
+- **Preferred:** Push to GitHub — Railway auto-deploys on every push to `main`
+- **Manual fallback:** `cd services/api-gateway && railway up`
 - Wait 3-5 minutes for build
 
 **Get Public URL**:
@@ -1070,19 +1034,86 @@ For each service:
 
 ---
 
+## Part 7.5: New Features (Post-Launch)
+
+The following features are integrated into the API Gateway and require no additional Railway services or environment variables. ClickHouse tables are created automatically on first API request.
+
+### Guardrails
+
+- **Route**: `/api/v1/guardrails` (registered in API Gateway)
+- **ClickHouse tables**: `guardrail_configs`, `guardrail_violations` (auto-created)
+- **No new env vars required**
+
+### Alerting
+
+- **Route**: `/api/v1/alerts` (registered in API Gateway)
+- **ClickHouse tables**: `generic_alert_rules`, `alert_evaluations` (auto-created)
+- **Background task**: `background_alert_evaluation_loop()` runs in API Gateway lifespan (every 5 min)
+- **Notification channels configured per-rule**: Slack webhook URL, email addresses (requires SMTP), PagerDuty routing key
+
+### Prompt Management
+
+- **Route**: `/api/v1/prompts` (registered in API Gateway)
+- **ClickHouse tables**: `prompt_templates` (auto-created)
+- **No new env vars required**
+
+### Drift Detection
+
+- **Route**: `/api/v1/drift` (registered in API Gateway)
+- **ClickHouse tables**: `agent_baselines`, `drift_alerts` (auto-created)
+- **Background task**: drift detection loop runs in API Gateway lifespan
+
+### Background Tasks
+
+The API Gateway lifespan runs 4 background async tasks:
+
+1. `data_source_sync` -- syncs external data sources
+2. `security_scan` -- background security scanning
+3. `drift_detection` -- detects agent behavior drift
+4. `alert_evaluation` -- evaluates alert rules continuously
+
+These run in-process. If the API Gateway restarts (Railway auto-restart), they resume automatically.
+
+### Verification Checklist
+
+After deploying the API Gateway with these features:
+
+- [ ] `GET /api/v1/guardrails/projects/{id}/configs` returns 200
+- [ ] `GET /api/v1/alerts/projects/{id}/rules` returns 200
+- [ ] `GET /api/v1/prompts/projects/{id}/prompts` returns 200
+- [ ] `GET /api/v1/drift/projects/{id}/baselines` returns 200
+- [ ] API Gateway logs show "Starting background..." messages for all 4 tasks
+
+### Self-Hosted ClickHouse (Alternative to Cloud)
+
+ClickHouse Cloud can be replaced with a self-hosted instance for cost savings (~$200-335/mo saved). The p8-cluster runs ClickHouse via Docker, exposed through a Cloudflare Tunnel at `clickhouse.prela.dev`.
+
+To switch Railway services to self-hosted ClickHouse:
+
+```bash
+CLICKHOUSE_HOST=clickhouse.prela.dev
+CLICKHOUSE_PORT=443
+CLICKHOUSE_SECURE=true
+CLICKHOUSE_USER=prela_app
+CLICKHOUSE_PASSWORD=<set in Railway>
+CLICKHOUSE_DATABASE=prela
+```
+
+See `CLICKHOUSE_SELF_HOST_IMPLEMENTATION.md` for full setup details.
+
+---
+
 ## Part 8: Final Checklist
 
 ### Pre-Launch Verification
 
-- [ ] ClickHouse Cloud accessible and `prela` database exists
-- [ ] Upstash Kafka has `traces` and `spans` topics
+- [ ] ClickHouse accessible and `prela` database exists
 - [ ] Clerk application configured with correct allowed origins
 - [ ] Stripe has all 8 products/prices created
 - [ ] Stripe webhook configured and testing successfully
-- [ ] Railway Postgres has all 5 tables
+- [ ] Railway Postgres has all tables from migrations
 - [ ] Railway Redis accessible
 - [ ] Ingest Gateway health check returns 200
-- [ ] Trace Service logs show "Waiting for messages"
 - [ ] API Gateway health check returns 200
 - [ ] Dashboard loads and auth works
 - [ ] Marketing website loads
@@ -1103,7 +1134,6 @@ For each service:
 - [ ] Rate limiting enabled (1000/min ingest, 100/min API)
 - [ ] Database credentials not exposed
 - [ ] ClickHouse password is strong
-- [ ] Kafka credentials secured
 
 ### Cost Monitoring
 
@@ -1132,12 +1162,14 @@ If a deployment fails:
 If migration causes issues:
 
 ```bash
-# Connect to Railway Postgres
-railway run --service prela-postgres psql $DATABASE_URL
+# Get the public URL first (see Part 2.4 above)
+PUBLIC_DB="postgresql://postgres:<password>@switchyard.proxy.rlwy.net:<port>/railway"
 
-# Manually revert changes (example)
-DROP TABLE IF EXISTS new_table_name;
-ALTER TABLE old_table DROP COLUMN new_column;
+# Connect interactively
+psql "$PUBLIC_DB"
+
+# Or run a one-off rollback command
+psql "$PUBLIC_DB" -c "ALTER TABLE api_keys DROP COLUMN IF EXISTS team_id;"
 ```
 
 Or restore from Railway automatic backup:
@@ -1161,7 +1193,7 @@ If everything is broken:
 
 4. **Investigate and fix**:
    - Check logs across all services
-   - Verify external service status (ClickHouse, Kafka, Clerk)
+   - Verify external service status (ClickHouse, Clerk)
    - Rollback or hotfix
 
 ---
@@ -1175,14 +1207,12 @@ If everything is broken:
 | Railway Postgres | $10 | Managed database |
 | Railway Redis | $5 | Managed cache |
 | Railway Ingest Gateway | $10-15 | 1 replica, ~512MB RAM |
-| Railway Trace Service | $10-15 | Background worker |
 | Railway API Gateway | $10-15 | 1 replica, ~512MB RAM |
 | Railway Dashboard | $5-10 | Static/preview server |
 | Railway Website | $0-5 | If on Vercel: free |
 | **Railway Total** | **$50-75** | |
 | | |
-| ClickHouse Cloud | $0-20 | Free 30 days, then ~$10-20 |
-| Upstash Kafka | $0-10 | Free tier 10k msgs/day |
+| ClickHouse | $0 | Self-hosted on p8 (or Cloud ~$10-20/mo) |
 | Clerk | $0 | Free up to 10k MAU |
 | Stripe | Variable | 2.9% + $0.30/transaction |
 | **External Total** | **$0-30** | |
@@ -1192,7 +1222,7 @@ If everything is broken:
 **Optimization Tips**:
 - Use Railway Hobby plan ($5/service vs $10)
 - Set ClickHouse TTL to 90 days (reduces storage)
-- Batch Kafka messages (reduces message count)
+- Self-host ClickHouse on p8 to eliminate Cloud costs (see CLICKHOUSE_SELF_HOST_IMPLEMENTATION.md)
 - Combine frontend services if possible
 - Monitor usage and scale down if over-provisioned
 
